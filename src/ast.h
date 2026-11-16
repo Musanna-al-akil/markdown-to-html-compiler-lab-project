@@ -32,3 +32,7 @@ struct Warning {
 Node makeNode(NodeType type, string text, int line);
 
 void addWarning(vector<Warning>& warnings, int line, string message);
+
+bool hasInlineText(Node& node);
+
+string nodeTypeName(NodeType type);
