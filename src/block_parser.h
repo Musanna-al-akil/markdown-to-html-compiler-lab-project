@@ -7,4 +7,4 @@
 
 using namespace std;
 
-Node parseBlocks(vector<string>& lines);
+Node parseBlocks(vector<string>& lines, vector<Warning>& warnings);

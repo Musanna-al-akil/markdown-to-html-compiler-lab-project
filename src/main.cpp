@@ -49,7 +49,11 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    Node doc = parseBlocks(lines);
+    vector<Warning> warnings;
+    Node doc = parseBlocks(lines, warnings);
+    for (int i = 0; i < (int)warnings.size(); i++) {
+        cerr << inputPath << ":" << warnings[i].line << ": warning: " << warnings[i].message << "\n";
+    }
 
     string html = generateHtml(doc);
     string outputPath = htmlFileName(inputPath);
