@@ -37,14 +37,18 @@ string generateHtml(Node& node) {
     if (node.type == Document) return htmlChildren(node);
     if (node.type == Heading) {
         string tag = "h" + to_string(node.level);
-        return "<" + tag + ">" + escapeHtml(node.text) + "</" + tag + ">\n";
+        return "<" + tag + ">" + htmlChildren(node) + "</" + tag + ">\n";
     }
-    if (node.type == Paragraph) return wrap("p", escapeHtml(node.text)) + "\n";
+    if (node.type == Paragraph) return wrap("p", htmlChildren(node)) + "\n";
     if (node.type == List) {
         string tag = "ul";
         if (node.ordered) tag = "ol";
         return "<" + tag + ">\n" + htmlChildren(node) + "</" + tag + ">\n";
     }
-    if (node.type == ListItem) return wrap("li", escapeHtml(node.text)) + "\n";
-    return htmlCodeBlock(node);
+    if (node.type == ListItem) return wrap("li", htmlChildren(node)) + "\n";
+    if (node.type == CodeBlock) return htmlCodeBlock(node);
+    if (node.type == Text) return escapeHtml(node.text);
+    if (node.type == Strong) return wrap("strong", htmlChildren(node));
+    if (node.type == Emph) return wrap("em", htmlChildren(node));
+    return wrap("code", escapeHtml(node.text));
 }

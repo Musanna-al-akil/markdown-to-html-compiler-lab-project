@@ -1,7 +1,7 @@
 #include "ast.h"
 #include "block_parser.h"
 #include "html_gen.h"
-#include "inline_lexer.h"
+#include "inline_parser.h"
 
 #include <fstream>
 #include <iostream>
@@ -56,17 +56,6 @@ bool writeFile(string path, string text) {
     return !out.fail();
 }
 
-string dumpAllTokens(Node& node) {
-    if (hasInlineText(node)) {
-        vector<Token> tokenList = lexInline(node.text);
-        string out = nodeTypeName(node.type) + " (line " + to_string(node.line) + "): " + node.text + "\n";
-        return out + dumpTokens(tokenList);
-    }
-    string out = "";
-    for (int i = 0; i < (int)node.children.size(); i++) out += dumpAllTokens(node.children[i]);
-    return out;
-}
-
 int main(int argc, char* argv[]) {
     if (!readArguments(argc, argv)) {
         printUsage();
@@ -82,6 +71,7 @@ int main(int argc, char* argv[]) {
     vector<Warning> warnings;
     Node doc = parseBlocks(lines, warnings);
     if (showTokens) cout << dumpAllTokens(doc);
+    parseAllInlines(doc);
 
     for (int i = 0; i < (int)warnings.size(); i++) {
         cerr << inputPath << ":" << warnings[i].line << ": warning: " << warnings[i].message << "\n";

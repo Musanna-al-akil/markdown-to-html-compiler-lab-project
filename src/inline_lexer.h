@@ -25,6 +25,8 @@ struct Token {
 
 vector<Token> lexInline(string text);
 
+string rawText(Token token);
+
 string tokenTypeName(TokenType type);
 
 string dumpTokens(vector<Token>& tokens);

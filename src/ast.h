@@ -11,7 +11,11 @@ enum NodeType {
     Paragraph,
     List,
     ListItem,
-    CodeBlock
+    CodeBlock,
+    Text,
+    Strong,
+    Emph,
+    Code
 };
 
 struct Node {

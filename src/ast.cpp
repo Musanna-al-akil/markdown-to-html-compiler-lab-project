@@ -32,6 +32,10 @@ string nodeTypeName(NodeType type) {
         case List:       return "List";
         case ListItem:   return "ListItem";
         case CodeBlock:  return "CodeBlock";
+        case Text:       return "Text";
+        case Strong:     return "Strong";
+        case Emph:       return "Emph";
+        case Code:       return "Code";
     }
     return "?";
 }

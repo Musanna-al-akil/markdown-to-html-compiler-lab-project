@@ -71,6 +71,11 @@ vector<Token> lexInline(string text) {
     return tokens;
 }
 
+string rawText(Token token) {
+    if (token.type == ESCAPE) return "\\" + token.text;
+    return token.text;
+}
+
 string tokenTypeName(TokenType type) {
     switch (type) {
         case TEXT:     return "TEXT";
