@@ -89,8 +89,60 @@ void parseEmphasis(vector<Node>& out, TokenType delim, NodeType type) {
     }
 }
 
+bool isUrlToken(Token t) {
+    if (t.type == ESCAPE) return true;
+    if (t.type != TEXT) return false;
+    for (int i = 0; i < (int)t.text.size(); i++) {
+        if (t.text[i] == ' ' || t.text[i] == '\t') return false;
+    }
+    return true;
+}
+
+bool readUrl(string& url) {
+    int k = tokenPos + 1;
+    if (k >= (int)tokens.size() || tokens[k].type != LPAREN) return false;
+    k++;
+    while (k < (int)tokens.size() && isUrlToken(tokens[k])) {
+        url += tokens[k].text;
+        k++;
+    }
+    if (k >= (int)tokens.size() || tokens[k].type != RPAREN) return false;
+    tokenPos = k + 1;
+    return true;
+}
+
+void parseLinkOrImage(vector<Node>& out, bool isImage) {
+    if (isImage) tokenPos += 2;
+    else tokenPos += 1;
+    vector<Node> inner = parseUntil(RBRACKET);
+
+    string url = "";
+    if (currentIs(RBRACKET) && readUrl(url)) {
+        Node node;
+        if (isImage) {
+            node = makeNode(Image, "", inlineLine);
+            for (int i = 0; i < (int)inner.size(); i++) node.text += plainText(inner[i]);
+        } else {
+            node = makeNode(Link, "", inlineLine);
+            node.children = inner;
+        }
+        node.attr = url;
+        out.push_back(node);
+        return;
+    }
+
+    if (isImage) addText(out, "![");
+    else addText(out, "[");
+    addAll(out, inner);
+    if (currentIs(RBRACKET)) {
+        addText(out, "]");
+        tokenPos++;
+    }
+}
+
 void parseInline(vector<Node>& out) {
     Token tok = tokens[tokenPos];
+    bool nextIsBracket = tokenPos + 1 < (int)tokens.size() && tokens[tokenPos + 1].type == LBRACKET;
 
     if (tok.type == BACKTICK) {
         parseCodeSpan(out);
@@ -98,6 +150,10 @@ void parseInline(vector<Node>& out) {
         parseEmphasis(out, STAR, Emph);
     } else if (tok.type == DSTAR) {
         parseEmphasis(out, DSTAR, Strong);
+    } else if (tok.type == LBRACKET) {
+        parseLinkOrImage(out, false);
+    } else if (tok.type == BANG && nextIsBracket) {
+        parseLinkOrImage(out, true);
     } else {
         addText(out, tok.text);
         tokenPos++;

@@ -24,6 +24,13 @@ bool hasInlineText(Node& node) {
     return node.type == Heading || node.type == Paragraph || node.type == ListItem;
 }
 
+string plainText(Node& node) {
+    if (node.type == Text || node.type == Code || node.type == Image) return node.text;
+    string out = "";
+    for (int i = 0; i < (int)node.children.size(); i++) out += plainText(node.children[i]);
+    return out;
+}
+
 string nodeTypeName(NodeType type) {
     switch (type) {
         case Document:   return "Document";
@@ -36,6 +43,8 @@ string nodeTypeName(NodeType type) {
         case Strong:     return "Strong";
         case Emph:       return "Emph";
         case Code:       return "Code";
+        case Link:       return "Link";
+        case Image:      return "Image";
     }
     return "?";
 }

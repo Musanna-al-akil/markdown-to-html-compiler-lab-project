@@ -15,7 +15,9 @@ enum NodeType {
     Text,
     Strong,
     Emph,
-    Code
+    Code,
+    Link,
+    Image
 };
 
 struct Node {
@@ -38,5 +40,7 @@ Node makeNode(NodeType type, string text, int line);
 void addWarning(vector<Warning>& warnings, int line, string message);
 
 bool hasInlineText(Node& node);
+
+string plainText(Node& node);
 
 string nodeTypeName(NodeType type);

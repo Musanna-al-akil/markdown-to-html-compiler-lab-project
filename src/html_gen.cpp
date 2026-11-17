@@ -50,5 +50,9 @@ string generateHtml(Node& node) {
     if (node.type == Text) return escapeHtml(node.text);
     if (node.type == Strong) return wrap("strong", htmlChildren(node));
     if (node.type == Emph) return wrap("em", htmlChildren(node));
-    return wrap("code", escapeHtml(node.text));
+    if (node.type == Code) return wrap("code", escapeHtml(node.text));
+    if (node.type == Link) {
+        return "<a href=\"" + escapeHtml(node.attr) + "\">" + htmlChildren(node) + "</a>";
+    }
+    return "<img src=\"" + escapeHtml(node.attr) + "\" alt=\"" + escapeHtml(node.text) + "\">";
 }
