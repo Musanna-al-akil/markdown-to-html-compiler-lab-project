@@ -59,7 +59,7 @@ string quoted(string s) {
 }
 
 string nodeDetails(Node& node) {
-    if (node.type == Heading) return " level=" + to_string(node.level);
+    if (node.type == Heading) return " level=" + to_string(node.level) + " id=" + quoted(node.attr);
     if (node.type == List) {
         if (node.ordered) return " ordered";
         return " bullet";

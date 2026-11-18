@@ -2,7 +2,9 @@
 #include "block_parser.h"
 #include "html_gen.h"
 #include "inline_parser.h"
+#include "semantic.h"
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -59,6 +61,10 @@ bool writeFile(string path, string text) {
     return !out.fail();
 }
 
+bool byLine(Warning a, Warning b) {
+    return a.line < b.line;
+}
+
 int main(int argc, char* argv[]) {
     if (!readArguments(argc, argv)) {
         printUsage();
@@ -75,7 +81,9 @@ int main(int argc, char* argv[]) {
     Node doc = parseBlocks(lines, warnings);
     if (showTokens) cout << dumpAllTokens(doc);
     parseAllInlines(doc);
+    analyze(doc, warnings);
 
+    stable_sort(warnings.begin(), warnings.end(), byLine);
     for (int i = 0; i < (int)warnings.size(); i++) {
         cerr << inputPath << ":" << warnings[i].line << ": warning: " << warnings[i].message << "\n";
     }

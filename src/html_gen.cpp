@@ -37,7 +37,7 @@ string generateHtml(Node& node) {
     if (node.type == Document) return htmlChildren(node);
     if (node.type == Heading) {
         string tag = "h" + to_string(node.level);
-        return "<" + tag + ">" + htmlChildren(node) + "</" + tag + ">\n";
+        return "<" + tag + " id=\"" + escapeHtml(node.attr) + "\">" + htmlChildren(node) + "</" + tag + ">\n";
     }
     if (node.type == Paragraph) return wrap("p", htmlChildren(node)) + "\n";
     if (node.type == List) {
