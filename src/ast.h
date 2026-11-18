@@ -44,3 +44,5 @@ bool hasInlineText(Node& node);
 string plainText(Node& node);
 
 string nodeTypeName(NodeType type);
+
+string dumpAst(Node& node, int depth);

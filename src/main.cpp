@@ -12,9 +12,10 @@ using namespace std;
 
 string inputPath = "";
 bool showTokens = false;
+bool showAst = false;
 
 void printUsage() {
-    cerr << "usage: mdc input.md [--tokens]\n";
+    cerr << "usage: mdc input.md [--tokens] [--ast]\n";
 }
 
 bool readArguments(int argc, char* argv[]) {
@@ -22,6 +23,8 @@ bool readArguments(int argc, char* argv[]) {
         string arg = argv[i];
         if (arg == "--tokens") {
             showTokens = true;
+        } else if (arg == "--ast") {
+            showAst = true;
         } else {
             inputPath = arg;
         }
@@ -76,7 +79,9 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < (int)warnings.size(); i++) {
         cerr << inputPath << ":" << warnings[i].line << ": warning: " << warnings[i].message << "\n";
     }
-    if (showTokens) return 0;
+    if (showAst) cout << dumpAst(doc, 0);
+
+    if (showTokens || showAst) return 0;
 
     string html = generateHtml(doc);
     string outputPath = htmlFileName(inputPath);

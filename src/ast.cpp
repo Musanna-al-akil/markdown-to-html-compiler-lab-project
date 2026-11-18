@@ -48,3 +48,35 @@ string nodeTypeName(NodeType type) {
     }
     return "?";
 }
+
+string quoted(string s) {
+    string out = "\"";
+    for (int i = 0; i < (int)s.size(); i++) {
+        if (s[i] == '\n') out += "\\n";
+        else out += s[i];
+    }
+    return out + "\"";
+}
+
+string nodeDetails(Node& node) {
+    if (node.type == Heading) return " level=" + to_string(node.level);
+    if (node.type == List) {
+        if (node.ordered) return " ordered";
+        return " bullet";
+    }
+    if (node.type == CodeBlock) return " lang=" + quoted(node.attr) + " " + quoted(node.text);
+    if (node.type == Link) return " href=" + quoted(node.attr);
+    if (node.type == Image) return " src=" + quoted(node.attr) + " alt=" + quoted(node.text);
+    if (node.type == Text || node.type == Code) return " " + quoted(node.text);
+    return "";
+}
+
+string dumpAst(Node& node, int depth) {
+    string out = "";
+    for (int i = 0; i < depth * 2; i++) out += " ";
+    out += nodeTypeName(node.type) + nodeDetails(node) + "\n";
+    for (int i = 0; i < (int)node.children.size(); i++) {
+        out += dumpAst(node.children[i], depth + 1);
+    }
+    return out;
+}
