@@ -9,3 +9,5 @@ using namespace std;
 string escapeHtml(string text);
 
 string generateHtml(Node& node);
+
+string generateHtmlPage(Node& doc);

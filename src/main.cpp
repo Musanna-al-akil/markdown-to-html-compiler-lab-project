@@ -13,25 +13,44 @@
 using namespace std;
 
 string inputPath = "";
+string outputPath = "";
 bool showTokens = false;
 bool showAst = false;
 
 void printUsage() {
-    cerr << "usage: mdc input.md [--tokens] [--ast]\n";
+    cerr << "usage: mdc input.md [-o out] [--tokens] [--ast]\n";
+    cerr << "  writes input.html next to input.md\n";
 }
 
-bool readArguments(int argc, char* argv[]) {
+bool readArguments(int argc, char* argv[], string& error) {
     for (int i = 1; i < argc; i++) {
         string arg = argv[i];
         if (arg == "--tokens") {
             showTokens = true;
         } else if (arg == "--ast") {
             showAst = true;
+        } else if (arg == "-o") {
+            if (i + 1 >= argc || string(argv[i + 1]) == "") {
+                error = "-o needs a file name";
+                return false;
+            }
+            i++;
+            outputPath = argv[i];
+        } else if (arg[0] == '-') {
+            error = "unknown option '" + arg + "'";
+            return false;
+        } else if (inputPath != "") {
+            error = "only one input file is allowed";
+            return false;
         } else {
             inputPath = arg;
         }
     }
-    return inputPath != "";
+    if (inputPath == "") {
+        error = "no input file";
+        return false;
+    }
+    return true;
 }
 
 bool endsWith(string text, string ending) {
@@ -66,14 +85,16 @@ bool byLine(Warning a, Warning b) {
 }
 
 int main(int argc, char* argv[]) {
-    if (!readArguments(argc, argv)) {
+    string error;
+    if (!readArguments(argc, argv, error)) {
+        cerr << "mdc: error: " << error << "\n";
         printUsage();
         return 2;
     }
 
     vector<string> lines;
-    if (!readLines(inputPath, lines)) {
-        cerr << "mdc: error: cannot read '" << inputPath << "'\n";
+    if (!readLines(inputPath, lines) || lines.size() == 0) {
+        cerr << "mdc: error: cannot read '" << inputPath << "' (missing, empty or a folder)\n";
         return 1;
     }
 
@@ -89,14 +110,15 @@ int main(int argc, char* argv[]) {
     }
     if (showAst) cout << dumpAst(doc, 0);
 
-    if (showTokens || showAst) return 0;
+    bool dumping = showTokens || showAst;
+    if (dumping && outputPath == "") return 0;
 
-    string html = generateHtml(doc);
-    string outputPath = htmlFileName(inputPath);
+    string html = generateHtmlPage(doc);
+    if (outputPath == "") outputPath = htmlFileName(inputPath);
     if (!writeFile(outputPath, html)) {
         cerr << "mdc: error: cannot write '" << outputPath << "'\n";
         return 1;
     }
-    cout << "Wrote " << outputPath << "\n";
+    if (!dumping) cout << "Wrote " << outputPath << "\n";
     return 0;
 }

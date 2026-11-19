@@ -56,3 +56,27 @@ string generateHtml(Node& node) {
     }
     return "<img src=\"" + escapeHtml(node.attr) + "\" alt=\"" + escapeHtml(node.text) + "\">";
 }
+
+string pageTitle(Node& doc) {
+    for (int i = 0; i < (int)doc.children.size(); i++) {
+        if (doc.children[i].type == Heading) return plainText(doc.children[i]);
+    }
+    return "Document";
+}
+
+string generateHtmlPage(Node& doc) {
+    string page = "";
+    page += "<!DOCTYPE html>\n";
+    page += "<html lang=\"en\">\n";
+    page += "<head>\n";
+    page += "<meta charset=\"utf-8\">\n";
+    page += "<title>" + escapeHtml(pageTitle(doc)) + "</title>\n";
+    page += "<style>body { max-width: 46em; margin: 2em auto; padding: 0 1em; ";
+    page += "font-family: sans-serif; line-height: 1.5; }</style>\n";
+    page += "</head>\n";
+    page += "<body>\n";
+    page += generateHtml(doc);
+    page += "</body>\n";
+    page += "</html>\n";
+    return page;
+}
