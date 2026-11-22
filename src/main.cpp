@@ -68,6 +68,7 @@ bool readLines(string path, vector<string>& lines) {
     if (!in) return false;
     string line;
     while (getline(in, line)) {
+        if (line.size() > 0 && line[line.size() - 1] == '\r') line.erase(line.size() - 1);
         lines.push_back(line);
     }
     return true;

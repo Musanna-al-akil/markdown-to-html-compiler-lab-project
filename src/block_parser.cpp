@@ -116,6 +116,9 @@ Node parseList(vector<string>& lines, int& pos) {
 
     while (pos < (int)lines.size() && continuesList(lines[pos], list.ordered)) {
         list.children.push_back(parseListItem(lines, pos));
+        if (pos + 1 < (int)lines.size() && isBlank(lines[pos]) && continuesList(lines[pos + 1], list.ordered)) {
+            pos++;
+        }
     }
     return list;
 }
