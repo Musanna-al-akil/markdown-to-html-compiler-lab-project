@@ -6,6 +6,9 @@ and then generates HTML from that tree.
 
 ## Build
 
+A ready-made `mdc` (built on macOS, Apple Silicon) is included, so you can run it directly.
+If it does not run on your computer, build it yourself:
+
 ```sh
 g++ -std=c++17 -o mdc src/*.cpp
 ```
@@ -71,6 +74,13 @@ Output (inside `<body>`):
 | Driver | `src/main.cpp` | Reads options and runs the steps in order |
 
 Warnings are printed as `file:line: warning: message` and do not stop the compiler.
+
+## Limitations
+
+- No nested lists, tables, blockquotes or raw HTML
+- No `_underscore_` emphasis
+- Lines of a paragraph are joined with a space
+- Heading ids keep only `a-z`, `0-9` and `-`
 
 ## Demo
 

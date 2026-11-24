@@ -1,4 +1,3 @@
-mdc
 *.o
 .DS_Store
 demo/*.html
