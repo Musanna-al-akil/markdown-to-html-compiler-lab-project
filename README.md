@@ -4,6 +4,14 @@ A small compiler written in C++17 that turns a Markdown file into an HTML page.
 It works like a real compiler: it reads the input, builds a tree (AST), checks it,
 and then generates HTML from that tree.
 
+## Project structure
+
+```
+src/      source code of the compiler
+demo/     sample Markdown files
+mdc       the compiled program
+```
+
 ## Build
 
 A ready-made `mdc` (built on macOS, Apple Silicon) is included, so you can run it directly.
